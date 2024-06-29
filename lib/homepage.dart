@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'score_manager.dart';
 import 'package:vibration/vibration.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int timeLeft = 5 * 60;
+  int maxTime = 5 * 60;
   Timer? _timer;
   final TextEditingController _controller = TextEditingController();
   final ScoreManager _scoreManager = ScoreManager();
@@ -26,8 +28,8 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _timer?.cancel();
       _timer = null;
-      timeLeft =
-          _controller.text != "" ? int.parse(_controller.text) * 60 : 600;
+      timeLeft = maxTime;
+      maxTime = timeLeft;
 
       if (success) {
         _scoreManager.incrementScore(10);
@@ -88,6 +90,7 @@ class _HomePageState extends State<HomePage> {
     if (minutes != null) {
       setState(() {
         timeLeft = minutes * 60;
+        maxTime = timeLeft;
       });
     }
   }
@@ -130,6 +133,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     int minutes = timeLeft ~/ 60;
     int seconds = timeLeft % 60;
+    double progress = timeLeft / maxTime;
 
     String formattedTime =
         "${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}";
@@ -142,7 +146,18 @@ class _HomePageState extends State<HomePage> {
             Text("Score: ${_scoreManager.getScore()}"),
             Text(
               formattedTime,
-              style: const TextStyle(fontSize: 100),
+              style: GoogleFonts.ptMono()
+                  .copyWith(fontSize: 100, fontWeight: FontWeight.bold),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+              child: LinearProgressIndicator(
+                value: progress,
+                backgroundColor: Theme.of(context).colorScheme.surfaceBright,
+                color: Colors.greenAccent,
+                minHeight: 60,
+                borderRadius: BorderRadius.circular(20),
+              ),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                 ElevatedButton(
                   onPressed: _showEditTimeDialog,
                   style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
+                    foregroundColor: Theme.of(context).colorScheme.onSurface,
                   ),
                   child: const Padding(
                     padding: EdgeInsets.symmetric(vertical: 25.0),
@@ -168,7 +183,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: const Padding(
                     padding:
-                        EdgeInsets.symmetric(vertical: 25.0, horizontal: 30),
+                        EdgeInsets.symmetric(vertical: 60.0, horizontal: 30),
                     child: Text(
                       "Start",
                     ),
