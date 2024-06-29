@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'score_manager.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,12 +13,22 @@ class _HomePageState extends State<HomePage> {
   int timeLeft = 5 * 60;
   Timer? _timer;
   final TextEditingController _controller = TextEditingController();
+  final ScoreManager _scoreManager = ScoreManager();
 
-  void _endMeditation() {
+  @override
+  void initState() {
+    super.initState();
+    _scoreManager.loadScore();
+  }
+
+  void _endMeditation(bool success) {
     setState(() {
       _timer?.cancel();
       _timer = null;
       timeLeft = 5 * 60;
+      if (success) {
+        _scoreManager.incrementScore(10);
+      }
     });
   }
 
@@ -29,14 +40,15 @@ class _HomePageState extends State<HomePage> {
         if (timeLeft > 0) {
           timeLeft--;
         } else {
-          _endMeditation();
+          _endMeditation(true);
         }
       });
     });
   }
 
   void forceEndMeditation() {
-    _endMeditation();
+    _endMeditation(false);
+    _scoreManager.decrementScore(5);
   }
 
   void _confirmEndMeditation() {
@@ -122,6 +134,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            Text("Score: ${_scoreManager.getScore()}"),
             Text(
               timeLeft <= 0 ? 'D O N E' : formattedTime,
               style: const TextStyle(fontSize: 100),
