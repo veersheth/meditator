@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'score_manager.dart';
+import 'package:vibration/vibration.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,13 +22,17 @@ class _HomePageState extends State<HomePage> {
     _scoreManager.loadScore();
   }
 
-  void _endMeditation(bool success) {
+  void _endMeditation(bool success) async {
     setState(() {
       _timer?.cancel();
       _timer = null;
-      timeLeft = 5 * 60;
+      timeLeft =
+          _controller.text != "" ? int.parse(_controller.text) * 60 : 600;
+
       if (success) {
         _scoreManager.incrementScore(10);
+        Vibration.vibrate(
+            pattern: [1500, 700, 1500, 700, 1500, 700, 1500, 700]);
       }
     });
   }
@@ -136,7 +141,7 @@ class _HomePageState extends State<HomePage> {
           children: [
             Text("Score: ${_scoreManager.getScore()}"),
             Text(
-              timeLeft <= 0 ? 'D O N E' : formattedTime,
+              formattedTime,
               style: const TextStyle(fontSize: 100),
             ),
             Row(
