@@ -9,7 +9,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int timeLeft = 5 * 60; // 5 minutes in seconds
+  int timeLeft = 5 * 60;
   Timer? _timer;
   final TextEditingController _controller = TextEditingController();
 
@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _timer?.cancel();
       _timer = null;
+      timeLeft = 5 * 60;
     });
   }
 
@@ -35,9 +36,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void forceEndMeditation() {
-    // Logic to forcefully end the meditation
     _endMeditation();
-    // Additional logic for force ending can be added here
   }
 
   void _confirmEndMeditation() {
@@ -51,14 +50,14 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               child: const Text("Cancel"),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: const Text("Yes"),
               onPressed: () {
                 forceEndMeditation();
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -84,6 +83,7 @@ class _HomePageState extends State<HomePage> {
           title: const Text("Edit Time"),
           content: TextField(
             controller: _controller,
+            autofocus: true,
             keyboardType: TextInputType.number,
             decoration: const InputDecoration(
               labelText: 'Enter time in minutes',
@@ -93,14 +93,14 @@ class _HomePageState extends State<HomePage> {
             TextButton(
               child: const Text("Cancel"),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: const Text("Set"),
               onPressed: () {
                 _updateTimeLimit(_controller.text);
-                Navigator.of(context).pop(); // Close the dialog and update time
+                Navigator.of(context).pop();
               },
             ),
           ],
@@ -123,31 +123,52 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              timeLeft <= 0 ? 'DONE' : formattedTime,
+              timeLeft <= 0 ? 'D O N E' : formattedTime,
               style: const TextStyle(fontSize: 100),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                MaterialButton(
+                ElevatedButton(
                   onPressed: _showEditTimeDialog,
-                  elevation: 0,
-                  child: const Text("Edit"),
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                  ),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 25.0),
+                    child: Text(
+                      "Edit",
+                    ),
+                  ),
                 ),
-                MaterialButton(
+                const SizedBox(width: 20),
+                ElevatedButton(
                   onPressed: _timer == null ? _startMeditation : null,
-                  color: Colors.lightGreenAccent,
-                  elevation: 0,
-                  child: const Text("Start"),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.greenAccent,
+                    foregroundColor: Colors.black,
+                  ),
+                  child: const Padding(
+                    padding:
+                        EdgeInsets.symmetric(vertical: 25.0, horizontal: 30),
+                    child: Text(
+                      "Start",
+                    ),
+                  ),
                 ),
-                MaterialButton(
-                  onPressed: _timer != null
-                      ? _confirmEndMeditation
-                      : null, // Enable button if timer is active
-                  color: Colors.redAccent,
-                  elevation: 0,
-                  child: const Text("Stop"),
-                ),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                    onPressed: _timer != null ? _confirmEndMeditation : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.redAccent.withOpacity(0.8),
+                      foregroundColor: Colors.white,
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      child: Text(
+                        "Stop",
+                      ),
+                    )),
               ],
             ),
           ],
@@ -158,8 +179,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _timer
-        ?.cancel(); // Ensure the timer is canceled when the widget is disposed
+    _timer?.cancel();
     super.dispose();
   }
 }

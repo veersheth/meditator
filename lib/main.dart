@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:meditation_gamified/homepage.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  MainApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomePage()
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(useMaterial3: true),
+      home: HomePage(),
     );
   }
 }
