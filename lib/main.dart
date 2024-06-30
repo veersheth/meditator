@@ -15,8 +15,8 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(
         useMaterial3: true,
-        // textTheme: GoogleFonts.manropeTextTheme(),
       ),
+      // ).copyWith(textTheme: GoogleFonts().manrope()),
       home: HomePage(),
     );
   }
