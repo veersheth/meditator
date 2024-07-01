@@ -4,5 +4,4 @@
 - Simple, fast, and easy to use
 - Minimal design
 
-> Complete meditations award points
-> Incomplete meditations deduct points
+> Complete meditations award points. Incomplete meditations deduct points. 
